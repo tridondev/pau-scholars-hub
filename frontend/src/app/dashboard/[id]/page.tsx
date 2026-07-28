@@ -10,6 +10,7 @@ import {
   SubmissionDetail, Institute, ReviewerOption,
 } from "@/lib/api";
 import { SDGS } from "@/lib/sdgs";
+import { AU_AGENDA_AREAS } from "@/lib/au_agenda";
 
 const TYPES = [
   ["journal_article", "Journal article"], ["conference_paper", "Conference paper"],
@@ -43,6 +44,7 @@ export default function SubmissionDetailPage() {
   const [institutes, setInstitutes] = useState<Institute[]>([]);
   const [researchArea, setResearchArea] = useState("");
   const [sdgs, setSdgs] = useState<string[]>([]);
+  const [auAgendaAreas, setAuAgendaAreas] = useState<string[]>([]);
   const [references, setReferences] = useState("");
 
   // Co-author mini-form
@@ -69,6 +71,7 @@ export default function SubmissionDetailPage() {
         setInstitute(s.institute || "");
         setResearchArea(s.research_area);
         setSdgs(s.sdgs);
+        setAuAgendaAreas(s.au_agenda_areas);
         setReferences(s.references);
         setNextStatus(s.status);
       })
@@ -98,6 +101,12 @@ export default function SubmissionDetailPage() {
     setSdgs((prev) => (prev.includes(code) ? prev.filter((s) => s !== code) : [...prev, code]));
   }
 
+  function toggleAuAgenda(code: string) {
+    setAuAgendaAreas((prev) =>
+      prev.includes(code) ? prev.filter((s) => s !== code) : [...prev, code]
+    );
+  }
+
   async function handleSave(e: React.FormEvent) {
     e.preventDefault();
     setSaving(true);
@@ -109,6 +118,7 @@ export default function SubmissionDetailPage() {
         keywords: keywords.split(",").map((k) => k.trim()).filter(Boolean),
         institute: institute || null,
         research_area: researchArea,
+        au_agenda_areas: auAgendaAreas,
         sdgs,
         references,
       });
@@ -262,6 +272,21 @@ export default function SubmissionDetailPage() {
               <label key={s.code} className="flex items-center gap-2 text-xs text-ink-secondary">
                 <input type="checkbox" checked={sdgs.includes(s.code)} onChange={() => toggleSdg(s.code)} disabled={!canEdit} />
                 {s.code} · {s.label}
+              </label>
+            ))}
+          </div>
+        </div>
+        <div>
+          <label className="field-label">AU Agenda 2063 areas addressed</label>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+            {AU_AGENDA_AREAS.map((a) => (
+              <label key={a.code} className="flex items-center gap-2 text-xs text-ink-secondary">
+                <input
+                  type="checkbox"
+                  checked={auAgendaAreas.includes(a.code)}
+                  onChange={() => toggleAuAgenda(a.code)}
+                />
+                {a.code} · {a.label}
               </label>
             ))}
           </div>

@@ -24,6 +24,7 @@ class ArticleDocument(Document):
     programme = Keyword()
     research_area = Keyword()
     sdgs = Keyword(multi=True)
+    au_agenda_areas = Keyword(multi=True)
     submission_type = Keyword()
     year = Integer()
     published_at = Date()

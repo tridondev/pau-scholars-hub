@@ -28,6 +28,9 @@ class RepositorySearchView(APIView):
         sdg = request.query_params.get("sdg")
         if sdg:
             filters.append({"term": {"sdgs": sdg}})
+        au_agenda = request.query_params.get("au_agenda")
+        if au_agenda:
+            filters.append({"term": {"au_agenda_areas": au_agenda}})
         year = request.query_params.get("year")
         if year:
             filters.append({"term": {"year": int(year)}})

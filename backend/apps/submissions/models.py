@@ -40,6 +40,7 @@ class Submission(models.Model):
     institute = models.ForeignKey("users.Institute", on_delete=models.SET_NULL, null=True, blank=True)
     research_area = models.CharField(max_length=255, blank=True)
     sdgs = models.JSONField(default=list, blank=True)  # e.g. ["SDG 4", "SDG 6"]
+    au_agenda_areas = models.JSONField(default=list, blank=True)  # e.g. ["Aspiration 1", "Aspiration 6"]
     references = models.TextField(blank=True)
 
     doi = models.CharField(max_length=100, blank=True, null=True, unique=False)

@@ -89,6 +89,7 @@ export interface Submission {
   status: string;
   corresponding_author_name: string;
   sdgs: string[];
+  au_agenda_areas: string[];
   created_at: string;
   published_at: string | null;
 }
@@ -145,6 +146,7 @@ export function createSubmission(payload: {
   institute?: string | null;
   research_area?: string;
   sdgs?: string[];
+  au_agenda_areas?: string[];
   references?: string;
 }) {
   const body: Record<string, unknown> = { ...payload };
@@ -193,6 +195,7 @@ export interface SubmissionDetail {
   institute: string | null;
   research_area: string;
   sdgs: string[];
+  au_agenda_areas: string[];
   references: string;
   doi: string | null;
   authors: Author[];
@@ -216,6 +219,7 @@ export function updateSubmission(id: string, payload: Partial<{
   institute: string | null;
   research_area: string;
   sdgs: string[];
+  au_agenda_areas: string[];
   references: string;
 }>) {
   const body: Record<string, unknown> = { ...payload };
@@ -306,6 +310,7 @@ export interface SearchResult {
   authors: string[];
   institute: string;
   sdgs: string[];
+  au_agenda_areas: string[];
   year: number;
 }
 

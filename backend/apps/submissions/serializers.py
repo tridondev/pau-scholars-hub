@@ -36,7 +36,7 @@ class SubmissionListSerializer(serializers.ModelSerializer):
         model = Submission
         fields = [
             "id", "title", "submission_type", "status",
-            "corresponding_author_name", "sdgs", "created_at", "published_at",
+            "corresponding_author_name", "sdgs", "au_agenda_areas", "created_at", "published_at",
         ]
 
 
@@ -50,7 +50,7 @@ class SubmissionDetailSerializer(serializers.ModelSerializer):
         model = Submission
         fields = [
             "id", "title", "abstract", "keywords", "submission_type", "status",
-            "corresponding_author", "corresponding_author_name", "institute", "research_area", "sdgs",
+            "corresponding_author", "corresponding_author_name", "institute", "research_area", "sdgs", "au_agenda_areas",
             "references", "doi", "authors", "files", "review_assignments",
             "submitted_at", "published_at", "created_at", "updated_at",
         ]

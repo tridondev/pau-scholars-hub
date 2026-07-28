@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { createSubmission, getInstitutes, Institute } from "@/lib/api";
 import { useAuth } from "@/lib/auth";
 import { SDGS } from "@/lib/sdgs";
+import { AU_AGENDA_AREAS } from "@/lib/au_agenda";
 
 const TYPES = [
   ["journal_article", "Journal article"], ["conference_paper", "Conference paper"],
@@ -25,6 +26,7 @@ export default function SubmitPage() {
   const [institutes, setInstitutes] = useState<Institute[]>([]);
   const [researchArea, setResearchArea] = useState("");
   const [sdgs, setSdgs] = useState<string[]>([]);
+  const [auAgendaAreas, setAuAgendaAreas] = useState<string[]>([]);
   const [references, setReferences] = useState("");
   const [error, setError] = useState("");
   const [saving, setSaving] = useState(false);
@@ -44,6 +46,11 @@ export default function SubmitPage() {
       prev.includes(code) ? prev.filter((s) => s !== code) : [...prev, code]
     );
   }
+  function toggleAuAgenda(code: string) {
+    setAuAgendaAreas((prev) =>
+      prev.includes(code) ? prev.filter((s) => s !== code) : [...prev, code]
+    );
+  }
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -55,6 +62,7 @@ export default function SubmitPage() {
         keywords: keywords.split(",").map((k) => k.trim()).filter(Boolean),
         institute: institute || null,
         research_area: researchArea,
+        au_agenda_areas: auAgendaAreas,
         sdgs,
         references,
       });
@@ -163,6 +171,22 @@ export default function SubmitPage() {
                   onChange={() => toggleSdg(s.code)}
                 />
                 {s.code} · {s.label}
+              </label>
+            ))}
+          </div>
+        </div>
+
+        <div>
+          <label className="field-label">AU Agenda 2063 areas addressed</label>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+            {AU_AGENDA_AREAS.map((a) => (
+              <label key={a.code} className="flex items-center gap-2 text-xs text-ink-secondary">
+                <input
+                  type="checkbox"
+                  checked={auAgendaAreas.includes(a.code)}
+                  onChange={() => toggleAuAgenda(a.code)}
+                />
+                {a.code} · {a.label}
               </label>
             ))}
           </div>

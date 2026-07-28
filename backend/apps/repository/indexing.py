@@ -42,6 +42,7 @@ def index_article(article):
         country=submission.institute.country if submission.institute else None,
         research_area=submission.research_area,
         sdgs=submission.sdgs or [],
+        au_agenda_areas=submission.au_agenda_areas or [],
         submission_type=submission.submission_type,
         year=submission.published_at.year if submission.published_at else None,
         published_at=submission.published_at,
