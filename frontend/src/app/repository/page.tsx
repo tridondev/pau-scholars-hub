@@ -85,7 +85,7 @@ export default function RepositoryPage() {
 
       <div className="grid md:grid-cols-[220px_1fr] gap-10">
         {/* Filter rail */}
-        <aside className="md:space-y-6">
+        <aside className="min-w-0 md:space-y-6">
                   <div>
                     <p className="eyebrow mb-3">Institute</p>
                     <ul className="flex gap-2 overflow-x-auto pb-2 -mx-1 px-1 md:flex-col md:gap-1.5 md:overflow-visible md:pb-0 md:mx-0 md:px-0 text-sm">
