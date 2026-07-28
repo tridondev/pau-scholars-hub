@@ -7,11 +7,11 @@ from rest_framework import generics, permissions, viewsets
 from rest_framework.exceptions import PermissionDenied
 from rest_framework.response import Response
 from django.contrib.auth import get_user_model
-from .models import AcademicProfile, Institute
+from .models import AcademicProfile, Institute, UniversityService
 from .serializers import (
     RegisterSerializer, UserSerializer, UserSelfUpdateSerializer,
     AcademicProfileSerializer, InstituteSerializer,
-    UserManagementSerializer, RoleUpdateSerializer,
+    UserManagementSerializer, RoleUpdateSerializer, UniversityServiceLiteSerializer, UniversityServiceSerializer,
 )
 
 User = get_user_model()
@@ -112,3 +112,33 @@ class UserRoleExportView(APIView):
                 u.date_joined.strftime("%Y-%m-%d"),
             ])
         return response
+
+class UniversityServiceViewSet(viewsets.ModelViewSet):
+    """
+    Super-admin-only management of the Section 9 institutional-integration
+    toggles. Regular users never hit this — see MyServicesView below.
+    """
+    queryset = UniversityService.objects.all()
+    serializer_class = UniversityServiceSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        if not self.request.user.is_superuser:
+            raise PermissionDenied("Super admin access required.")
+        return super().get_queryset()
+
+
+class MyServicesView(generics.ListAPIView):
+    """
+    What the logged-in user is allowed to see, based on the signup
+    category (role) they chose. Superusers see every active service so
+    they can preview what each category sees.
+    """
+    serializer_class = UniversityServiceLiteSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        qs = UniversityService.objects.filter(is_active=True)
+        if self.request.user.is_superuser:
+            return qs
+        return qs.filter(allowed_roles__contains=[self.request.user.role])

@@ -64,3 +64,27 @@ class AcademicProfile(models.Model):
 
     def __str__(self):
         return f"Profile: {self.user.email}"
+
+class UniversityService(models.Model):
+    """
+    Section 9 — Future University Services (Institutional Integration).
+    Each row is a toggleable module (Student Results, GPA/CGPA, Academic
+    Transcripts, Course Registration, Student Portal, Alumni Portal).
+    `is_active` stays False until PAU formally authorizes a real, secure
+    integration with its official systems — flipping it here only
+    controls whether the placeholder is visible in the UI for the roles
+    listed in `allowed_roles`; it never fabricates real academic data.
+    """
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    key = models.SlugField(unique=True)
+    name = models.CharField(max_length=150)
+    description = models.TextField(blank=True)
+    is_active = models.BooleanField(default=False)
+    allowed_roles = models.JSONField(default=list, blank=True)  # e.g. ["student", "alumni"]
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ["name"]
+
+    def __str__(self):
+        return self.name

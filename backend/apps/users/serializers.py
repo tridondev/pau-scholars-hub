@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from django.contrib.auth import get_user_model
-from .models import AcademicProfile, Institute
+from .models import AcademicProfile, Institute, UniversityService
 
 User = get_user_model()
 
@@ -30,12 +30,12 @@ class UserSerializer(serializers.ModelSerializer):
         fields = [
             "id", "email", "first_name", "last_name", "role",
             "institute", "student_staff_id", "country",
-            "is_orcid_verified", "orcid_id", "profile", "is_role_manager",
+            "is_orcid_verified", "orcid_id", "profile", "is_role_manager", "is_superuser",
         ]
         # role and email are never editable through this serializer — role
         # controls permissions (editor/admin/reviewer) so it must not be
         # settable by the user themselves; email is the login identifier.
-        read_only_fields = ["id", "email", "role", "is_orcid_verified", "is_role_manager"]
+        read_only_fields = ["id", "email", "role", "is_orcid_verified", "is_role_manager", "is_superuser"]
 
 
 class UserSelfUpdateSerializer(serializers.ModelSerializer):
@@ -82,3 +82,18 @@ class RoleUpdateSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ["role"]
+
+class UniversityServiceSerializer(serializers.ModelSerializer):
+    """Full representation — superuser-only, used to toggle activation
+    and choose which signup categories can see each module."""
+    class Meta:
+        model = UniversityService
+        fields = ["id", "key", "name", "description", "is_active", "allowed_roles", "updated_at"]
+        read_only_fields = ["id", "key", "updated_at"]
+
+
+class UniversityServiceLiteSerializer(serializers.ModelSerializer):
+    """What a regular user sees in their own available-services list."""
+    class Meta:
+        model = UniversityService
+        fields = ["id", "key", "name", "description"]

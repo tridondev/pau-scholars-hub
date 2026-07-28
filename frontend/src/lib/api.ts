@@ -331,6 +331,8 @@ export interface Me {
   is_orcid_verified: boolean;
   orcid_id: string | null;
   is_role_manager: boolean;
+  is_superuser: boolean;
+
   profile: {
     id: string; faculty: string; department: string; programme: string;
     biography: string; research_interests: string[]; google_scholar_url: string;
@@ -422,4 +424,37 @@ export async function downloadUsersCsv() {
   a.download = "pau_users_roles.csv";
   a.click();
   window.URL.revokeObjectURL(url);
+}
+
+export interface UniversityService {
+  id: string;
+  key: string;
+  name: string;
+  description: string;
+  is_active: boolean;
+  allowed_roles: string[];
+  updated_at: string;
+}
+
+export interface UniversityServiceLite {
+  id: string;
+  key: string;
+  name: string;
+  description: string;
+}
+
+// Superuser-only: full list + toggle controls.
+export function listAllServices() {
+  return request<UniversityService[] | { results: UniversityService[] }>("/users/services/");
+}
+
+export function updateService(id: string, payload: Partial<{ is_active: boolean; allowed_roles: string[] }>) {
+  return request<UniversityService>(`/users/services/${id}/`, {
+    method: "PATCH", body: JSON.stringify(payload),
+  });
+}
+
+// What the current user can see, based on the category they signed up as.
+export function getMyServices() {
+  return request<UniversityServiceLite[] | { results: UniversityServiceLite[] }>("/users/services/mine/");
 }

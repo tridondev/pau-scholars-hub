@@ -12,6 +12,7 @@ export interface AuthUser {
   last_name: string;
   role: string;
   is_role_manager: boolean;
+  is_superuser: boolean;
   institute: { id: string; name: string; acronym: string } | null;
   student_staff_id: string;
   country: string;
