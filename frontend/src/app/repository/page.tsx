@@ -85,32 +85,32 @@ export default function RepositoryPage() {
 
       <div className="grid md:grid-cols-[220px_1fr] gap-10">
         {/* Filter rail */}
-        <aside className="space-y-6">
-          <div>
-            <p className="eyebrow mb-3">Institute</p>
-            <ul className="space-y-1.5 text-sm">
-              <li>
-                <button
-                  onClick={() => handleInstituteClick("")}
-                  className={`w-full text-left px-2 py-1.5 rounded-md ${!instituteFilter ? "bg-surface-1 font-medium" : "text-ink-secondary hover:bg-surface-1"}`}
-                >
-                  All institutes
-                </button>
-              </li>
-              {PAU_INSTITUTES.map((inst) => (
-                <li key={inst.acronym}>
-                  <button
-                    onClick={() => handleInstituteClick(inst.acronym)}
-                    className={`w-full text-left px-2 py-1.5 rounded-md flex items-baseline justify-between gap-2 ${instituteFilter === inst.acronym ? "bg-surface-1 font-medium" : "text-ink-secondary hover:bg-surface-1"}`}
-                  >
-                    <span className="font-mono text-xs">{inst.acronym}</span>
-                    <span className="text-xs text-ink-muted">{inst.country}</span>
-                  </button>
-                </li>
-              ))}
-            </ul>
-          </div>
-        </aside>
+        <aside className="md:space-y-6">
+                  <div>
+                    <p className="eyebrow mb-3">Institute</p>
+                    <ul className="flex gap-2 overflow-x-auto pb-2 -mx-1 px-1 md:flex-col md:gap-1.5 md:overflow-visible md:pb-0 md:mx-0 md:px-0 text-sm">
+                      <li className="shrink-0 md:shrink">
+                        <button
+                          onClick={() => handleInstituteClick("")}
+                          className={`px-3 py-1.5 rounded-full md:rounded-md md:w-full text-left whitespace-nowrap border md:border-0 ${!instituteFilter ? "bg-surface-1 font-medium border-[color:var(--border)]" : "text-ink-secondary hover:bg-surface-1 border-transparent"}`}
+                        >
+                          All institutes
+                        </button>
+                      </li>
+                      {PAU_INSTITUTES.map((inst) => (
+                        <li key={inst.acronym} className="shrink-0 md:shrink">
+                          <button
+                            onClick={() => handleInstituteClick(inst.acronym)}
+                            className={`px-3 py-1.5 rounded-full md:rounded-md md:w-full text-left whitespace-nowrap border md:border-0 flex items-baseline gap-1.5 md:justify-between md:gap-2 ${instituteFilter === inst.acronym ? "bg-surface-1 font-medium border-[color:var(--border)]" : "text-ink-secondary hover:bg-surface-1 border-transparent"}`}
+                          >
+                            <span className="font-mono text-xs">{inst.acronym}</span>
+                            <span className="text-xs text-ink-muted">{inst.country}</span>
+                          </button>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                </aside>
 
         {/* Results */}
         <div>
