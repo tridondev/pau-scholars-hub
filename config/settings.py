@@ -99,7 +99,6 @@ USE_TZ = True
 
 STATIC_URL = "static/"
 STATIC_ROOT = BASE_DIR / "staticfiles"
-STORAGES["staticfiles"] = {"BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage"}
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 # ---- REST framework / JWT ----
@@ -136,7 +135,7 @@ USE_R2_STORAGE = bool(config("R2_ACCESS_KEY_ID", default="")) and bool(config("R
 if USE_R2_STORAGE:
     STORAGES = {
         "default": {"BACKEND": "storages.backends.s3boto3.S3Boto3Storage"},
-        "staticfiles": {"BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage"},
+        "staticfiles": {"BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage"},
     }
     AWS_ACCESS_KEY_ID = config("R2_ACCESS_KEY_ID", default="")
     AWS_SECRET_ACCESS_KEY = config("R2_SECRET_ACCESS_KEY", default="")
@@ -147,8 +146,8 @@ if USE_R2_STORAGE:
     AWS_S3_FILE_OVERWRITE = False
 else:
     STORAGES = {
-        "default": {"BACKEND": "django.core.files.storage.FileSystemStorage"},
-        "staticfiles": {"BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage"},
+        "default": {"BACKEND": "storages.backends.s3boto3.S3Boto3Storage"},
+        "staticfiles": {"BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage"},
     }
     MEDIA_URL = "media/"
     MEDIA_ROOT = BASE_DIR / "media"
