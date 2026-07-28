@@ -38,14 +38,24 @@ const STEPS = [
 // A representative sample of the UN Sustainable Development Goals research
 // on the platform is tagged against — real framework, not invented data.
 const SAMPLE_SDGS = [
+  "SDG 1 · No poverty",
   "SDG 2 · Zero hunger",
-  "SDG 3 · Good health",
+  "SDG 3 · Good health & well-being",
   "SDG 4 · Quality education",
-  "SDG 6 · Clean water",
-  "SDG 7 · Clean energy",
+  "SDG 5 · Gender equality",
+  "SDG 6 · Clean water & sanitation",
+  "SDG 7 · Affordable & clean energy",
+  "SDG 8 · Decent work & economic growth",
+  "SDG 9 · Industry, innovation & infrastructure",
+  "SDG 10 · Reduced inequalities",
+  "SDG 11 · Sustainable cities & communities",
+  "SDG 12 · Responsible consumption & production",
   "SDG 13 · Climate action",
+  "SDG 14 · Life below water",
+  "SDG 15 · Life on land",
+  "SDG 16 · Peace, justice & strong institutions",
+  "SDG 17 · Partnerships for the goals",
 ];
-
 // The full set of AU Agenda 2063 aspirations research on the platform
 // is tagged against â€” real framework, not invented data.
 const SAMPLE_AU_AGENDA = [
