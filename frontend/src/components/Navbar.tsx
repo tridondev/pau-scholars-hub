@@ -1,0 +1,130 @@
+"use client";
+import Link from "next/link";
+import { useState, useEffect } from "react";
+import { usePathname, useRouter } from "next/navigation";
+import { useAuth } from "@/lib/auth";
+
+const publicLinks = [{ href: "/repository", label: "Repository" }];
+const memberLinks = [
+  { href: "/repository", label: "Repository" },
+  { href: "/submit", label: "Submit research" },
+  { href: "/dashboard", label: "Dashboard" },
+];
+
+export default function Navbar() {
+  const [open, setOpen] = useState(false);
+  const pathname = usePathname();
+  const router = useRouter();
+  const { user, loading, logout } = useAuth();
+
+  useEffect(() => setOpen(false), [pathname]);
+
+  function handleLogout() {
+    logout();
+    setOpen(false);
+    router.push("/");
+  }
+
+  const links = user
+    ? user.role === "reviewer"
+      ? [...memberLinks, { href: "/reviews", label: "Reviews" }]
+      : user.role === "editor" || user.role === "admin"
+      ? [...memberLinks, { href: "/admin", label: "Admin" }]
+      : memberLinks
+    : publicLinks;
+
+  return (
+    <header className="sticky top-0 z-30 bg-masthead text-white">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
+        <Link href="/" className="flex items-center gap-3 min-w-0">
+          <span className="w-9 h-9 shrink-0 rounded-full border border-gold-400/60 text-gold-300 flex items-center justify-center text-[11px] font-mono tracking-tight">
+            PAU
+          </span>
+          <span className="truncate">
+            <span className="block font-display text-base leading-tight">Scholars Hub</span>
+            <span className="hidden sm:block text-[11px] text-white/50 font-mono tracking-wide leading-tight">
+              PAN AFRICAN UNIVERSITY
+            </span>
+          </span>
+        </Link>
+
+        {/* Desktop nav */}
+        <nav className="hidden md:flex items-center gap-7 text-sm">
+          {links.map((l) => (
+            <Link key={l.href} href={l.href} className="text-white/80 hover:text-white transition-colors">
+              {l.label}
+            </Link>
+          ))}
+          {loading ? null : user ? (
+            <>
+              <Link href="/profile" className="flex items-center gap-2 text-white/80 hover:text-white transition-colors">
+                <span className="w-7 h-7 rounded-full border border-gold-400/60 text-gold-300 flex items-center justify-center text-[11px] font-mono">
+                  {user.first_name?.[0] || user.email[0].toUpperCase()}
+                </span>
+                {user.first_name || "Profile"}
+              </Link>
+              <button onClick={handleLogout} className="text-white/80 hover:text-white transition-colors">
+                Sign out
+              </button>
+            </>
+          ) : (
+            <>
+              <Link href="/login" className="text-white/80 hover:text-white transition-colors">
+                Sign in
+              </Link>
+              <Link
+                href="/signup"
+                className="bg-gold-400 text-gold-900 rounded-full px-4 py-1.5 text-sm font-medium hover:bg-gold-300 transition-colors"
+              >
+                Get started
+              </Link>
+            </>
+          )}
+        </nav>
+
+        {/* Mobile menu toggle */}
+        <button
+          className="md:hidden w-9 h-9 flex items-center justify-center"
+          aria-label={open ? "Close menu" : "Open menu"}
+          aria-expanded={open}
+          onClick={() => setOpen((v) => !v)}
+        >
+          <span className="relative block w-5 h-4">
+            <span className={`absolute left-0 top-0 w-5 h-0.5 bg-white transition-transform ${open ? "translate-y-[7px] rotate-45" : ""}`} />
+            <span className={`absolute left-0 top-[7px] w-5 h-0.5 bg-white transition-opacity ${open ? "opacity-0" : ""}`} />
+            <span className={`absolute left-0 top-[14px] w-5 h-0.5 bg-white transition-transform ${open ? "-translate-y-[7px] -rotate-45" : ""}`} />
+          </span>
+        </button>
+      </div>
+
+      {/* thin gold rule, like the foot of a masthead */}
+      <div className="h-px bg-gradient-to-r from-transparent via-gold-400/50 to-transparent" />
+
+      {/* Mobile nav panel */}
+      {open && (
+        <nav className="md:hidden border-t border-white/10 px-4 pb-4 flex flex-col gap-1 text-sm">
+          {links.map((l) => (
+            <Link key={l.href} href={l.href} className="py-3 border-b border-white/10 text-white/85">
+              {l.label}
+            </Link>
+          ))}
+          {loading ? null : user ? (
+            <>
+              <Link href="/profile" className="py-3 border-b border-white/10 text-white/85">
+                My profile ({user.first_name || user.email})
+              </Link>
+              <button onClick={handleLogout} className="py-3 text-left text-white/85">
+                Sign out
+              </button>
+            </>
+          ) : (
+            <>
+              <Link href="/login" className="py-3 border-b border-white/10 text-white/85">Sign in</Link>
+              <Link href="/signup" className="py-3 text-white/85">Get started</Link>
+            </>
+          )}
+        </nav>
+      )}
+    </header>
+  );
+}

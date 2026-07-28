@@ -1,0 +1,130 @@
+/* PAU Scholars Hub — design tokens
+   Pairs with tailwind.config.ts. Fraunces (display) carries the editorial,
+   journal-cover personality; Inter (body) stays quiet and legible across
+   languages; IBM Plex Mono marks anything that is data — DOIs, dates,
+   counts, institute codes — so a reader can tell "fact" from "prose" at
+   a glance without reading it. */
+
+:root {
+  --bg-page: #FAFAF7;
+  --bg-card: #FFFFFF;
+  --bg-subtle: #F1EFE8;
+
+  --text-primary: #211F1A;
+  --text-secondary: #5F5E5A;
+  --text-muted: #888780;
+
+  --border: #E4E2D8;
+  --border-strong: #D3D1C7;
+
+  --brand-primary: #1B7A3D;
+  --brand-secondary: #4CAF50;
+  --brand-gold: #B08D4F;
+  --brand-alert: #D32F2F;
+
+  --masthead: #0E2116;
+
+  --radius: 8px;
+  --radius-card: 14px;
+}
+
+.dark {
+  --bg-page: #14140F;
+  --bg-card: #1D1C16;
+  --bg-subtle: #242318;
+
+  --text-primary: #F1EFE8;
+  --text-secondary: #B4B2A9;
+  --text-muted: #888780;
+
+  --border: #3A382C;
+  --border-strong: #4A4838;
+
+  --brand-primary: #5FA97D;
+  --brand-secondary: #7BC584;
+  --brand-gold: #DFBA6C;
+  --brand-alert: #E76B6B;
+
+  --masthead: #0A160E;
+}
+
+body {
+  background: var(--bg-page);
+  color: var(--text-primary);
+}
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  h1, h2, h3 {
+    font-family: var(--font-display);
+    letter-spacing: -0.01em;
+  }
+}
+
+@layer components {
+  /* Five-dot constellation — one dot per PAU thematic institute. Used
+     wherever the platform needs to gesture at "the whole network" rather
+     than one institution: hero backdrop, footer, loading states. */
+  .constellation-dot {
+    @apply rounded-full;
+  }
+
+  .field-label {
+    @apply text-xs font-medium uppercase tracking-wide text-ink-secondary mb-1.5 block;
+  }
+
+  .field-input {
+    @apply w-full bg-white border border-[color:var(--border-strong)] rounded-lg px-3.5 py-2.5 text-sm
+           text-ink-primary placeholder:text-ink-muted
+           focus:outline-none focus:ring-2 focus:ring-primary-400 focus:border-primary-400
+           transition-shadow;
+  }
+
+  .btn-primary {
+    @apply inline-flex items-center justify-center gap-2 bg-primary-500 text-white
+           px-5 py-2.5 rounded-lg text-sm font-medium
+           hover:bg-primary-600 active:bg-primary-700 transition-colors
+           disabled:opacity-50 disabled:pointer-events-none;
+  }
+
+  .btn-secondary {
+    @apply inline-flex items-center justify-center gap-2 bg-white text-ink-primary
+           border border-[color:var(--border-strong)] px-5 py-2.5 rounded-lg text-sm font-medium
+           hover:bg-surface-1 transition-colors;
+  }
+
+  .card {
+    @apply bg-white border border-[color:var(--border)] rounded-card;
+  }
+
+  .eyebrow {
+    @apply font-mono text-xs uppercase tracking-[0.14em] text-gold-600;
+  }
+
+  .dot-grid-bg {
+    background-image: radial-gradient(currentColor 1px, transparent 1px);
+    background-size: 18px 18px;
+  }
+
+  .rise-in {
+    animation: rise-in 0.7s cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+}
+
+@keyframes rise-in {
+  from { opacity: 0; transform: translateY(14px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes drift {
+  0%, 100% { transform: translate(0, 0); }
+  50% { transform: translate(4px, -6px); }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .constellation-drift { animation: drift 7s ease-in-out infinite; }
+}
+

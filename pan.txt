@@ -1,0 +1,5 @@
+cd C:\Users\DELL\Downloads\pau-scholars-hub
+docker compose up -d db elasticsearch backend
+
+>> docker compose build backend                                  
+>> docker compose up  
