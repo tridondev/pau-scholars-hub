@@ -46,6 +46,18 @@ const SAMPLE_SDGS = [
   "SDG 13 · Climate action",
 ];
 
+// The full set of AU Agenda 2063 aspirations research on the platform
+// is tagged against â€” real framework, not invented data.
+const SAMPLE_AU_AGENDA = [
+  "Aspiration 1 · A prosperous Africa",
+  "Aspiration 2 · An integrated continent",
+  "Aspiration 3 · Good governance, democracy & human rights",
+  "Aspiration 4 · A peaceful & secure Africa",
+  "Aspiration 5 · Strong cultural identity & shared values",
+  "Aspiration 6 · People-driven development",
+  "Aspiration 7 · Africa as a global player & partner",
+];
+
 export default function HomePage() {
   const { user, loading } = useAuth();
 
@@ -225,6 +237,21 @@ export default function HomePage() {
           {SAMPLE_SDGS.map((s) => (
             <span key={s} className="font-mono text-xs px-3 py-1.5 rounded-full border border-[color:var(--border-strong)] text-ink-secondary">
               {s}
+            </span>
+          ))}
+        </div>
+      </section>
+
+      {/* AU Agenda 2063 chips â€” same pattern as the SDG chips above */}
+      <section className="py-12 sm:py-16 border-b border-[color:var(--border)]">
+        <p className="eyebrow mb-3">Aligned with the continent&rsquo;s vision</p>
+        <h2 className="font-display text-2xl sm:text-3xl mb-8 max-w-lg">
+          Every submission is also mapped to the AU Agenda 2063 aspirations it advances.
+        </h2>
+        <div className="flex flex-wrap gap-2.5">
+          {SAMPLE_AU_AGENDA.map((a) => (
+            <span key={a} className="font-mono text-xs px-3 py-1.5 rounded-full border border-[color:var(--border-strong)] text-ink-secondary">
+              {a}
             </span>
           ))}
         </div>
