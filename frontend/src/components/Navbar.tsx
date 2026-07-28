@@ -1,5 +1,6 @@
 "use client";
 import Link from "next/link";
+import Image from "next/image";
 import { useState, useEffect } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { useAuth } from "@/lib/auth";
@@ -44,8 +45,15 @@ export default function Navbar() {
     <header className="sticky top-0 z-30 bg-masthead text-white">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
         <Link href="/" className="flex items-center gap-3 min-w-0">
-          <span className="w-9 h-9 shrink-0 rounded-full border border-gold-400/60 text-gold-300 flex items-center justify-center text-[11px] font-mono tracking-tight">
-            PAU
+          <span className="bg-white rounded-md p-1 shrink-0 flex items-center justify-center">
+            <Image
+              src="/logos/pau-emblem-white.png"
+              alt="Pan African University logo"
+              width={28}
+              height={28}
+              className="w-7 h-7 object-contain"
+              priority
+            />
           </span>
           <span className="truncate">
             <span className="block font-display text-base leading-tight">Scholars Hub</span>
