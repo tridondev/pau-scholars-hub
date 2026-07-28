@@ -124,7 +124,10 @@ SIMPLE_JWT = {
 CORS_ALLOWED_ORIGINS = config(
     "CORS_ALLOWED_ORIGINS", default="http://localhost:3000", cast=Csv()
 )
-
+# ---- CSRF ----
+CSRF_TRUSTED_ORIGINS = config(
+    "CSRF_TRUSTED_ORIGINS", default="http://localhost:3000", cast=Csv()
+)
 # ---- Cloudflare R2 (S3-compatible) storage for research files ----
 # Falls back to local disk storage when R2 credentials aren't set (e.g. local
 # dev without a .env filled in), so submission file uploads work out of the
