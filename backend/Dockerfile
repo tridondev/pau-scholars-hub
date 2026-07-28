@@ -7,4 +7,4 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY . .
 EXPOSE 8000
 RUN python manage.py collectstatic --noinput
-CMD python manage.py migrate --noinput && (python manage.py createsuperuser --noinput || true) && python manage.py rebuild_index && gunicorn config.wsgi:application --bind 0.0.0.0:8000
+CMD python manage.py migrate --noinput && (python manage.py createsuperuser --noinput || true) && python manage.py rebuild_index && gunicorn config.wsgi:application --bind 0.0.0.0:8000CMD python manage.py migrate --noinput && (python manage.py createsuperuser --noinput || true) && python manage.py seed_university_services && python manage.py rebuild_index && gunicorn config.wsgi:application --bind 0.0.0.0:8000
