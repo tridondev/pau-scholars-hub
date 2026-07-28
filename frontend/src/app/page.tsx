@@ -32,7 +32,7 @@ const STEPS = [
   { n: "01", title: "Submit", body: "Upload your manuscript, dataset, or thesis with abstract, keywords, and co-authors." },
   { n: "02", title: "Review", body: "Editors screen it in, reviewers weigh in, and you get clear, tracked feedback." },
   { n: "03", title: "Publish", body: "Accepted work gets a DOI, a permanent home, and a place in a journal issue." },
-  { n: "04", title: "Discover", body: "It's searchable across the continent — by institute, country, topic, and SDG." },
+  { n: "04", title: "Discover", body: "It's searchable across the continent — by institute, country, topic, SDG and the Agenda 2063." },
 ];
 
 // A representative sample of the UN Sustainable Development Goals research
