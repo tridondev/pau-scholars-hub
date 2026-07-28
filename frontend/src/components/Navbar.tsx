@@ -33,6 +33,13 @@ export default function Navbar() {
       : memberLinks
     : publicLinks;
 
+  if (user?.is_role_manager) {
+    links.push({
+      href: "/admin/roles",
+      label: "Manage roles",
+    });
+  }
+
   return (
     <header className="sticky top-0 z-30 bg-masthead text-white">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">

@@ -30,12 +30,12 @@ class UserSerializer(serializers.ModelSerializer):
         fields = [
             "id", "email", "first_name", "last_name", "role",
             "institute", "student_staff_id", "country",
-            "is_orcid_verified", "orcid_id", "profile",
+            "is_orcid_verified", "orcid_id", "profile", "is_role_manager",
         ]
         # role and email are never editable through this serializer — role
         # controls permissions (editor/admin/reviewer) so it must not be
         # settable by the user themselves; email is the login identifier.
-        read_only_fields = ["id", "email", "role", "is_orcid_verified"]
+        read_only_fields = ["id", "email", "role", "is_orcid_verified", "is_role_manager"]
 
 
 class UserSelfUpdateSerializer(serializers.ModelSerializer):
@@ -65,3 +65,20 @@ class RegisterSerializer(serializers.ModelSerializer):
         user.save()
         AcademicProfile.objects.create(user=user)
         return user
+
+class UserManagementSerializer(serializers.ModelSerializer):
+    """Role-manager-only: row shape for the admin user list."""
+    institute = InstituteSerializer(read_only=True)
+
+    class Meta:
+        model = User
+        fields = ["id", "email", "first_name", "last_name", "role", "institute", "date_joined"]
+
+
+class RoleUpdateSerializer(serializers.ModelSerializer):
+    """Role-manager-only: change an existing user's role. Deliberately
+    excludes is_role_manager — that stays Django-admin-only, so a role
+    manager can never grant themselves or others their own power."""
+    class Meta:
+        model = User
+        fields = ["role"]

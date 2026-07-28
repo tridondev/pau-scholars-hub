@@ -33,6 +33,7 @@ class User(AbstractUser):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     email = models.EmailField(unique=True)
     role = models.CharField(max_length=20, choices=Role.choices, default=Role.STUDENT)
+    is_role_manager = models.BooleanField(default=False)  # can manage roles for other users, granted only via Django admin
     institute = models.ForeignKey(Institute, on_delete=models.SET_NULL, null=True, blank=True, related_name="users")
     student_staff_id = models.CharField(max_length=50, blank=True)
     country = models.CharField(max_length=100, blank=True)

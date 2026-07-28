@@ -95,6 +95,12 @@ export default function ProfilePage() {
   async function handleFileUpload(field: "profile_image" | "cv_file", e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
     if (!file || !user?.profile?.id) return;
+    const maxKb = field === "profile_image" ? 2048 : 5120; // 2MB image, 5MB CV
+    if (file.size / 1024 > maxKb) {
+      setError(`File too large — max ${maxKb / 1024}MB.`);
+      e.target.value = "";
+      return;
+    }
     setUploading(field === "profile_image" ? "image" : "cv");
     setError("");
     try {
@@ -261,6 +267,7 @@ export default function ProfilePage() {
             <div>
               <label className="field-label">Profile photo</label>
               <input type="file" accept="image/*" onChange={(e) => handleFileUpload("profile_image", e)} className="field-input" disabled={uploading !== null} />
+              <p className="text-xs text-ink-muted mt-1">Max 2MB (JPG, PNG)</p>
               {uploading === "image" && <p className="text-xs text-ink-muted mt-1">Uploading…</p>}
             </div>
             <div>

@@ -319,8 +319,27 @@ export function searchRepository(query: string, filters: Record<string, string> 
   return request<{ count: number; results: SearchResult[] }>(`/repository/search/?${params}`);
 }
 
+export interface Me {
+  id: string;
+  email: string;
+  first_name: string;
+  last_name: string;
+  role: string;
+  institute: Institute | null;
+  student_staff_id: string;
+  country: string;
+  is_orcid_verified: boolean;
+  orcid_id: string | null;
+  is_role_manager: boolean;
+  profile: {
+    id: string; faculty: string; department: string; programme: string;
+    biography: string; research_interests: string[]; google_scholar_url: string;
+    linkedin_url: string; cv_file: string | null; profile_image: string | null; updated_at: string;
+  } | null;
+}
+
 export function getMe() {
-  return request("/users/me/");
+  return request<Me>("/users/me/");
 }
 
 export function updateMe(payload: Partial<{
@@ -352,4 +371,55 @@ export function uploadProfileFile(profileId: string, field: "profile_image" | "c
   const formData = new FormData();
   formData.append(field, file);
   return request(`/users/profiles/${profileId}/`, { method: "PATCH", body: formData });
+}
+
+
+// --- Role management (role-manager / superuser only) ---------------------
+
+export interface ManagedUser {
+  id: string;
+  email: string;
+  first_name: string;
+  last_name: string;
+  role: string;
+  institute: Institute | null;
+  date_joined: string;
+}
+
+export function listManagedUsers(q: string = "") {
+  const params = q ? `?q=${encodeURIComponent(q)}` : "";
+  return request<ManagedUser[] | { results: ManagedUser[] }>(`/users/manage/${params}`);
+}
+
+export function updateUserRole(id: string, role: string) {
+  return request<ManagedUser>(`/users/manage/${id}/role/`, {
+    method: "PATCH", body: JSON.stringify({ role }),
+  });
+}
+
+export function createUserWithRole(payload: {
+  email: string; username: string; password: string;
+  first_name: string; last_name: string; role: string; institute?: string | null;
+}) {
+  const body: Record<string, unknown> = { ...payload };
+  if (!body.institute) delete body.institute;
+  return request<ManagedUser>("/users/manage/create/", { method: "POST", body: JSON.stringify(body) });
+}
+
+// CSV export needs the auth header, so a plain <a href> download won't
+// work (no way to attach Authorization to a browser navigation) — fetch
+// it with auth, then trigger the download from the resulting blob.
+export async function downloadUsersCsv() {
+  const token = getAccessToken();
+  const res = await fetch(`${API_BASE}/users/manage/export/`, {
+    headers: token ? { Authorization: `Bearer ${token}` } : {},
+  });
+  if (!res.ok) throw new Error("Export failed");
+  const blob = await res.blob();
+  const url = window.URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "pau_users_roles.csv";
+  a.click();
+  window.URL.revokeObjectURL(url);
 }
