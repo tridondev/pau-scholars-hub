@@ -3,7 +3,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import permissions
 from elasticsearch import Elasticsearch
-from elasticsearch.exceptions import NotFoundError, BadRequestError
+from elasticsearch.exceptions import NotFoundError, RequestError
 from .indexing import ensure_index_exists
 
 
@@ -68,7 +68,7 @@ class RepositorySearchView(APIView):
                 # empty, non-error result rather than failing the request.
                 ensure_index_exists()
                 return Response({"count": 0, "results": []})
-            except BadRequestError:
+            except RequestError:
                 # Most likely cause: the index mapping doesn't have the
                 # 'title.raw' sort field yet (e.g. it was built before that
                 # field was added, and the index needs a rebuild — see
