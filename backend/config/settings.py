@@ -147,6 +147,10 @@ if USE_R2_STORAGE:
     AWS_S3_ADDRESSING_STYLE = "virtual"
     AWS_DEFAULT_ACL = None
     AWS_S3_FILE_OVERWRITE = False
+    AWS_S3_SIGNATURE_VERSION = "s3v4"
+    AWS_S3_REGION_NAME = "auto"
+    AWS_QUERYSTRING_AUTH = False
+    AWS_S3_CUSTOM_DOMAIN = config("R2_PUBLIC_DOMAIN", default="")
 else:
     STORAGES = {
         "default": {"BACKEND": "storages.backends.s3boto3.S3Boto3Storage"},
