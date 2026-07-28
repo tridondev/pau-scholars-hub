@@ -15,7 +15,7 @@ const FEATURES = [
   {
     label: "Discover",
     title: "Search the continental repository",
-    body: "Filter published scholarship by institute, country, faculty, research area, and the SDGs it addresses.",
+    body: "Filter published scholarship by institute, country, faculty, research area, SDGs and the Agenda 2063 it addresses.",
     href: "/repository",
     cta: "Browse the repository",
   },
