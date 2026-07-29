@@ -3,3 +3,29 @@ docker compose up -d db elasticsearch backend
 
 >> docker compose build backend                                  
 >> docker compose up  
+
+Phase 1 — Push to GitHub
+bash
+cd pau-scholars-hub
+git init
+git add .
+git commit -m "Initial commit"
+
+Create a new repo on github.com (public or private, either works with Vercel/Render's free tiers), then:
+
+bash
+git remote add origin https://github.com/<you>/pau-scholars-hub.git
+git branch -M main
+git push -u origin main
+
+
+git order
+
+git add .
+git status
+
+git status
+
+git commit -m "Add academics module (courses, GPA, results, alumni) with role-based services, and homepage polish"
+
+git push origin main

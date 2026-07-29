@@ -4,6 +4,7 @@ import Image from "next/image";
 import { useState, useEffect } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { useAuth } from "@/lib/auth";
+import Avatar from "@/components/Avatar";
 
 const publicLinks = [{ href: "/repository", label: "Repository" }];
 const memberLinks = [
@@ -81,9 +82,7 @@ export default function Navbar() {
           {loading ? null : user ? (
             <>
               <Link href="/profile" className="flex items-center gap-2 text-white/80 hover:text-white transition-colors">
-                <span className="w-7 h-7 rounded-full border border-gold-400/60 text-gold-300 flex items-center justify-center text-[11px] font-mono">
-                  {user.first_name?.[0] || user.email[0].toUpperCase()}
-                </span>
+                <Avatar user={user} size={28} />
                 {user.first_name || "Profile"}
               </Link>
               <button onClick={handleLogout} className="text-white/80 hover:text-white transition-colors">
@@ -133,7 +132,8 @@ export default function Navbar() {
           ))}
           {loading ? null : user ? (
             <>
-              <Link href="/profile" className="py-3 border-b border-white/10 text-white/85">
+              <Link href="/profile" className="py-3 border-b border-white/10 text-white/85 flex items-center gap-2">
+                <Avatar user={user} size={24} />
                 My profile ({user.first_name || user.email})
               </Link>
               <button onClick={handleLogout} className="py-3 text-left text-white/85">

@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/lib/auth";
 import { updateMe, updateAcademicProfile, uploadProfileFile, getInstitutes, Institute } from "@/lib/api";
+import Avatar from "@/components/Avatar";
 
 export default function ProfilePage() {
   const { user, loading, refresh } = useAuth();
@@ -123,17 +124,7 @@ export default function ProfilePage() {
       <p className="eyebrow mb-3">Your profile</p>
       <div className="flex items-center justify-between gap-4 mb-10">
         <div className="flex items-center gap-4 min-w-0">
-          {user.profile?.profile_image ? (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img
-              src={user.profile.profile_image} alt=""
-              className="w-14 h-14 rounded-full object-cover border border-gold-400/60 shrink-0"
-            />
-          ) : (
-            <span className="w-14 h-14 rounded-full border border-gold-400/60 text-gold-700 bg-gold-50 flex items-center justify-center font-mono text-lg shrink-0">
-              {user.first_name?.[0] || user.email[0].toUpperCase()}
-            </span>
-          )}
+          <Avatar user={user} size={56} fallbackClassName="text-gold-700 bg-gold-50 text-lg" />
           <div className="min-w-0">
             <h1 className="font-display text-2xl truncate">
               {user.first_name} {user.last_name}
