@@ -96,6 +96,7 @@ class SubmissionViewSet(viewsets.ModelViewSet):
         new_status = request.data.get("status")
         if new_status not in SubmissionStatus.values:
             return Response({"detail": "Invalid status."}, status=status.HTTP_400_BAD_REQUEST)
+        was_published = submission.status == SubmissionStatus.PUBLISHED
         submission.status = new_status
         if new_status == SubmissionStatus.PUBLISHED:
             submission.published_at = timezone.now()
@@ -108,6 +109,16 @@ class SubmissionViewSet(viewsets.ModelViewSet):
             Article.objects.get_or_create(submission=submission)
         else:
             submission.save()
+            if was_published:
+                # Moving a submission *away* from published (retraction,
+                # correcting an editor mistake, etc.) must also pull it back
+                # out of the public repository — otherwise it stays
+                # discoverable in search forever even though its status no
+                # longer says "published". Deleting the Article triggers
+                # journals/signals.py's post_delete handler, which removes
+                # the corresponding Elasticsearch document.
+                from apps.journals.models import Article
+                Article.objects.filter(submission=submission).delete()
         return Response(SubmissionDetailSerializer(submission).data)
 
     @action(detail=True, methods=["post"], url_path="assign-reviewer")

@@ -29,3 +29,4 @@ git status
 git commit -m "Add academics module (courses, GPA, results, alumni) with role-based services, and homepage polish"
 
 git push origin main
+

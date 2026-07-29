@@ -3,6 +3,7 @@ import { useEffect, useState, useCallback } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { useAuth } from "@/lib/auth";
 import StatusBadge from "@/components/StatusBadge";
+import SubmissionProgress from "@/components/SubmissionProgress";
 import {
   getSubmission, updateSubmission, submitForReview,
   addAuthor, removeAuthor, uploadSubmissionFile, removeSubmissionFile,
@@ -230,6 +231,10 @@ export default function SubmissionDetailPage() {
         <StatusBadge status={submission.status} />
       </div>
       <h1 className="font-display text-3xl mb-6">{submission.title}</h1>
+
+      <div className="card px-5 py-6 mb-8">
+        <SubmissionProgress status={submission.status} />
+      </div>
 
       {notice && <p className="text-sm text-secondary-700 mb-4">{notice}</p>}
       {error && <p className="text-sm text-alert-600 mb-4">{error}</p>}
