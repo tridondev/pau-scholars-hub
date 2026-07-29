@@ -8,7 +8,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from .models import Course, CourseRegistration, Result, CourseMaterial
-from .permissions import IsLecturer, IsStudentOrAlumni
+from .permissions import IsLecturer, IsStudentOrAlumni, CanManageResults
 from .serializers import (
     CourseSerializer, CourseRegistrationSerializer, ResultSerializer,
     LecturerResultSerializer, CourseMaterialSerializer, RosterEntrySerializer,
@@ -201,20 +201,27 @@ class AlumniDirectoryView(generics.ListAPIView):
 
 class LecturerCoursesView(generics.ListAPIView):
     serializer_class = CourseSerializer
-    permission_classes = [IsLecturer]
+    permission_classes = [CanManageResults]
 
     def get_queryset(self):
         qs = Course.objects.select_related("institute").all()
-        if not self.request.user.is_superuser:
-            qs = qs.filter(lecturer=self.request.user)
-        return qs
+        user = self.request.user
+        if user.is_superuser:
+            return qs
+        if user.role == "admin":
+            # Institutional administrators don't teach specific courses —
+            # they manage every course in their own institute instead.
+            # (No institute assigned yet → no courses, not "all courses
+            # with no institute set".)
+            return qs.filter(institute=user.institute) if user.institute_id else qs.none()
+        return qs.filter(lecturer=user)
 
 
 class CourseRosterView(APIView):
     """A lecturer's class list for one of their own courses, each row
     showing the student's current result (if any) so grades can be
     entered inline."""
-    permission_classes = [IsLecturer]
+    permission_classes = [CanManageResults]
 
     def get(self, request, course_id):
         course = self._get_owned_course(request, course_id)
@@ -248,29 +255,48 @@ class CourseRosterView(APIView):
             course = Course.objects.get(pk=course_id)
         except Course.DoesNotExist:
             raise ValidationError("Course not found.")
-        if not request.user.is_superuser and course.lecturer_id != request.user.id:
+        user = request.user
+        if user.is_superuser:
+            return course
+        if user.role == "admin":
+            if not user.institute_id or course.institute_id != user.institute_id:
+                raise PermissionDenied("This course isn't in your institute.")
+            return course
+        if course.lecturer_id != user.id:
             raise PermissionDenied("You don't teach this course.")
         return course
 
 
 class LecturerResultViewSet(viewsets.ModelViewSet):
     """Lecturers create/update grades for students on their own
-    courses only — enforced both on write (validated below) and on
-    read (queryset scoped to their courses)."""
+    courses only; institutional administrators can do the same for
+    any course in their institute. Enforced both on write (validated
+    below) and on read (queryset scoped accordingly)."""
     serializer_class = LecturerResultSerializer
-    permission_classes = [IsLecturer]
+    permission_classes = [CanManageResults]
 
     def get_queryset(self):
         qs = Result.objects.select_related("student", "course")
-        if not self.request.user.is_superuser:
-            qs = qs.filter(course__lecturer=self.request.user)
+        user = self.request.user
+        if not user.is_superuser:
+            if user.role == "admin":
+                qs = qs.filter(course__institute=user.institute) if user.institute_id else qs.none()
+            else:
+                qs = qs.filter(course__lecturer=user)
         course_id = self.request.query_params.get("course")
         if course_id:
             qs = qs.filter(course_id=course_id)
         return qs
 
     def _check_course_ownership(self, course):
-        if not self.request.user.is_superuser and course.lecturer_id != self.request.user.id:
+        user = self.request.user
+        if user.is_superuser:
+            return
+        if user.role == "admin":
+            if not user.institute_id or course.institute_id != user.institute_id:
+                raise PermissionDenied("This course isn't in your institute.")
+            return
+        if course.lecturer_id != user.id:
             raise PermissionDenied("You don't teach this course.")
 
     def perform_create(self, serializer):

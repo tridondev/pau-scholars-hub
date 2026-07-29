@@ -43,6 +43,13 @@ export default function Navbar() {
     });
   }
 
+  if (user?.role === "lecturer" || user?.role === "admin" || user?.is_superuser) {
+    links.push({
+      href: "/results",
+      label: "Enter results",
+    });
+  }
+
   if (user?.is_superuser) {
     links.push({
       href: "/admin/services",
