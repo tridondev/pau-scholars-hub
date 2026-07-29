@@ -33,8 +33,8 @@ export default function Navbar() {
       ? [...memberLinks, { href: "/reviews", label: "Reviews" }]
       : user.role === "editor" || user.role === "admin"
       ? [...memberLinks, { href: "/admin", label: "Admin" }]
-      : memberLinks
-    : publicLinks;
+      : [...memberLinks]
+    : [...publicLinks];
 
   if (user?.is_role_manager) {
     links.push({
