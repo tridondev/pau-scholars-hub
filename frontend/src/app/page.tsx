@@ -35,37 +35,39 @@ const STEPS = [
   { n: "04", title: "Discover", body: "It's searchable across the continent by institute, country, topic, SDG and the Agenda 2063." },
 ];
 
+// The full set of AU Agenda 2063 aspirations research on the platform
+// is tagged against — real framework, not invented data.
+// Rendered as a scannable list (label + title) rather than wrapped chips.
+const SAMPLE_AU_AGENDA = [
+  { n: "Aspiration 1", title: "A prosperous Africa" },
+  { n: "Aspiration 2", title: "An integrated continent" },
+  { n: "Aspiration 3", title: "Good governance, democracy & human rights" },
+  { n: "Aspiration 4", title: "A peaceful & secure Africa" },
+  { n: "Aspiration 5", title: "Strong cultural identity & shared values" },
+  { n: "Aspiration 6", title: "People-driven development" },
+  { n: "Aspiration 7", title: "Africa as a global player & partner" },
+];
+
 // A representative sample of the UN Sustainable Development Goals research
 // on the platform is tagged against — real framework, not invented data.
 const SAMPLE_SDGS = [
-  "SDG 1 · No poverty",
-  "SDG 2 · Zero hunger",
-  "SDG 3 · Good health & well-being",
-  "SDG 4 · Quality education",
-  "SDG 5 · Gender equality",
-  "SDG 6 · Clean water & sanitation",
-  "SDG 7 · Affordable & clean energy",
-  "SDG 8 · Decent work & economic growth",
-  "SDG 9 · Industry, innovation & infrastructure",
-  "SDG 10 · Reduced inequalities",
-  "SDG 11 · Sustainable cities & communities",
-  "SDG 12 · Responsible consumption & production",
-  "SDG 13 · Climate action",
-  "SDG 14 · Life below water",
-  "SDG 15 · Life on land",
-  "SDG 16 · Peace, justice & strong institutions",
-  "SDG 17 · Partnerships for the goals",
-];
-// The full set of AU Agenda 2063 aspirations research on the platform
-// is tagged against â€” real framework, not invented data.
-const SAMPLE_AU_AGENDA = [
-  "Aspiration 1 · A prosperous Africa",
-  "Aspiration 2 · An integrated continent",
-  "Aspiration 3 · Good governance, democracy & human rights",
-  "Aspiration 4 · A peaceful & secure Africa",
-  "Aspiration 5 · Strong cultural identity & shared values",
-  "Aspiration 6 · People-driven development",
-  "Aspiration 7 · Africa as a global player & partner",
+  { n: "SDG 1", title: "No poverty" },
+  { n: "SDG 2", title: "Zero hunger" },
+  { n: "SDG 3", title: "Good health & well-being" },
+  { n: "SDG 4", title: "Quality education" },
+  { n: "SDG 5", title: "Gender equality" },
+  { n: "SDG 6", title: "Clean water & sanitation" },
+  { n: "SDG 7", title: "Affordable & clean energy" },
+  { n: "SDG 8", title: "Decent work & economic growth" },
+  { n: "SDG 9", title: "Industry, innovation & infrastructure" },
+  { n: "SDG 10", title: "Reduced inequalities" },
+  { n: "SDG 11", title: "Sustainable cities & communities" },
+  { n: "SDG 12", title: "Responsible consumption & production" },
+  { n: "SDG 13", title: "Climate action" },
+  { n: "SDG 14", title: "Life below water" },
+  { n: "SDG 15", title: "Life on land" },
+  { n: "SDG 16", title: "Peace, justice & strong institutions" },
+  { n: "SDG 17", title: "Partnerships for the goals" },
 ];
 
 export default function HomePage() {
@@ -113,6 +115,18 @@ export default function HomePage() {
             <p className="eyebrow text-gold-400 mb-5">
               The Pan African University · Continental Research Network
             </p>
+            {/*
+              NOTE on the "Connecting" vs "African" font mismatch you flagged:
+              both words share this single <h1> with the same font-display
+              class — there's no nested span splitting them, so structurally
+              they render identically. If they still look different in the
+              browser (not just in a screenshot), it's almost certainly a
+              font-loading flash (FOUT): the custom display font swaps in
+              after the fallback system font has already painted part of
+              the line. Share layout.tsx (where the font is loaded via
+              next/font) and I can set preload/fallback so this can't
+              flicker between words on first paint.
+            */}
             <h1 className="font-display text-4xl sm:text-5xl md:text-6xl leading-[1.08] mb-6">
               Connecting African scholars.
               <br />
@@ -174,7 +188,10 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Institute strip */}
+      {/* Institute strip
+          NOTE: reordering (PAUSS -> PAULESI -> PAUWES -> PAUSTI -> PAUGHSS)
+          and the single-row layout live inside InstituteConstellation.tsx,
+          which wasn't shared — send that file over and I'll apply it. */}
       <section className="py-12 sm:py-14 border-b border-[color:var(--border)]">
         <p className="eyebrow mb-6">Five institutes, one vision</p>
         <InstituteConstellation />
@@ -237,32 +254,37 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* SDG chips — real framework, grounds "research areas" in something concrete */}
+      {/* AU Agenda 2063 — now first, per feedback. List layout (label +
+          title, scanned top-to-bottom) instead of wrapped pills, mirroring
+          the institute list pattern above so the eye has a clear order
+          to follow instead of competing chips. */}
       <section className="py-12 sm:py-16 border-b border-[color:var(--border)]">
-        <p className="eyebrow mb-3">Research, grounded in outcomes</p>
+        <p className="eyebrow mb-3">Aligned with the continent&rsquo;s vision</p>
         <h2 className="font-display text-2xl sm:text-3xl mb-8 max-w-lg">
-          Every submission is mapped to the Sustainable Development Goals it addresses.
+          Every submission is mapped to the AU Agenda 2063 aspirations it advances.
         </h2>
-        <div className="flex flex-wrap gap-2.5">
-          {SAMPLE_SDGS.map((s) => (
-            <span key={s} className="font-mono text-xs px-3 py-1.5 rounded-full border border-[color:var(--border-strong)] text-ink-secondary">
-              {s}
-            </span>
+        <div className="grid sm:grid-cols-2 gap-x-10 gap-y-5">
+          {SAMPLE_AU_AGENDA.map((a) => (
+            <div key={a.n} className="flex items-baseline gap-3">
+              <span className="font-mono text-xs text-secondary-600 shrink-0 w-24">{a.n}</span>
+              <span className="text-sm text-ink-secondary leading-relaxed">{a.title}</span>
+            </div>
           ))}
         </div>
       </section>
 
-      {/* AU Agenda 2063 chips â€” same pattern as the SDG chips above */}
+      {/* SDGs — same list treatment, 3 columns since there are more items */}
       <section className="py-12 sm:py-16 border-b border-[color:var(--border)]">
-        <p className="eyebrow mb-3">Aligned with the continent&rsquo;s vision</p>
+        <p className="eyebrow mb-3">Research, grounded in outcomes</p>
         <h2 className="font-display text-2xl sm:text-3xl mb-8 max-w-lg">
-          Every submission is also mapped to the AU Agenda 2063 aspirations it advances.
+          Every submission is also mapped to the Sustainable Development Goals it addresses.
         </h2>
-        <div className="flex flex-wrap gap-2.5">
-          {SAMPLE_AU_AGENDA.map((a) => (
-            <span key={a} className="font-mono text-xs px-3 py-1.5 rounded-full border border-[color:var(--border-strong)] text-ink-secondary">
-              {a}
-            </span>
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-x-10 gap-y-5">
+          {SAMPLE_SDGS.map((s) => (
+            <div key={s.n} className="flex items-baseline gap-3">
+              <span className="font-mono text-xs text-secondary-600 shrink-0 w-14">{s.n}</span>
+              <span className="text-sm text-ink-secondary leading-relaxed">{s.title}</span>
+            </div>
           ))}
         </div>
       </section>

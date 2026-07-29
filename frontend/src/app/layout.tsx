@@ -1,11 +1,11 @@
 import type { Metadata, Viewport } from "next";
-import { Fraunces, Inter, IBM_Plex_Mono } from "next/font/google";
+import { IBM_Plex_Serif, Inter, IBM_Plex_Mono } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { AuthProvider } from "@/lib/auth";
 
-const display = Fraunces({
+const display = IBM_Plex_Serif({
   subsets: ["latin"],
   variable: "--font-display",
   weight: ["400", "500", "600"],
