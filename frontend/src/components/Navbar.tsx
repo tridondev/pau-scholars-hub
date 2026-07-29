@@ -9,6 +9,7 @@ const publicLinks = [{ href: "/repository", label: "Repository" }];
 const memberLinks = [
   { href: "/repository", label: "Repository" },
   { href: "/submit", label: "Submit research" },
+  { href: "/services", label: "Services" },
   { href: "/dashboard", label: "Dashboard" },
 ];
 
@@ -38,6 +39,13 @@ export default function Navbar() {
     links.push({
       href: "/admin/roles",
       label: "Manage roles",
+    });
+  }
+
+  if (user?.is_superuser) {
+    links.push({
+      href: "/admin/services",
+      label: "Manage services",
     });
   }
 

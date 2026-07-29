@@ -34,6 +34,7 @@ INSTALLED_APPS = [
     "apps.submissions",
     "apps.journals",
     "apps.repository",
+    "apps.academics",
 ]
 
 MIDDLEWARE = [

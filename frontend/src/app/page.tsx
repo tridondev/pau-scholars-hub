@@ -35,39 +35,40 @@ const STEPS = [
   { n: "04", title: "Discover", body: "It's searchable across the continent by institute, country, topic, SDG and the Agenda 2063." },
 ];
 
-// The full set of AU Agenda 2063 aspirations research on the platform
-// is tagged against — real framework, not invented data.
-// Rendered as a scannable list (label + title) rather than wrapped chips.
-const SAMPLE_AU_AGENDA = [
-  { n: "Aspiration 1", title: "A prosperous Africa" },
-  { n: "Aspiration 2", title: "An integrated continent" },
-  { n: "Aspiration 3", title: "Good governance, democracy & human rights" },
-  { n: "Aspiration 4", title: "A peaceful & secure Africa" },
-  { n: "Aspiration 5", title: "Strong cultural identity & shared values" },
-  { n: "Aspiration 6", title: "People-driven development" },
-  { n: "Aspiration 7", title: "Africa as a global player & partner" },
-];
-
 // A representative sample of the UN Sustainable Development Goals research
 // on the platform is tagged against — real framework, not invented data.
+// Number kept separate from label (rather than one combined string) so the
+// section below can render it as a scannable numbered list instead of
+// wrapping full sentences inside a pill shape.
 const SAMPLE_SDGS = [
-  { n: "SDG 1", title: "No poverty" },
-  { n: "SDG 2", title: "Zero hunger" },
-  { n: "SDG 3", title: "Good health & well-being" },
-  { n: "SDG 4", title: "Quality education" },
-  { n: "SDG 5", title: "Gender equality" },
-  { n: "SDG 6", title: "Clean water & sanitation" },
-  { n: "SDG 7", title: "Affordable & clean energy" },
-  { n: "SDG 8", title: "Decent work & economic growth" },
-  { n: "SDG 9", title: "Industry, innovation & infrastructure" },
-  { n: "SDG 10", title: "Reduced inequalities" },
-  { n: "SDG 11", title: "Sustainable cities & communities" },
-  { n: "SDG 12", title: "Responsible consumption & production" },
-  { n: "SDG 13", title: "Climate action" },
-  { n: "SDG 14", title: "Life below water" },
-  { n: "SDG 15", title: "Life on land" },
-  { n: "SDG 16", title: "Peace, justice & strong institutions" },
-  { n: "SDG 17", title: "Partnerships for the goals" },
+  { n: 1, label: "No poverty" },
+  { n: 2, label: "Zero hunger" },
+  { n: 3, label: "Good health & well-being" },
+  { n: 4, label: "Quality education" },
+  { n: 5, label: "Gender equality" },
+  { n: 6, label: "Clean water & sanitation" },
+  { n: 7, label: "Affordable & clean energy" },
+  { n: 8, label: "Decent work & economic growth" },
+  { n: 9, label: "Industry, innovation & infrastructure" },
+  { n: 10, label: "Reduced inequalities" },
+  { n: 11, label: "Sustainable cities & communities" },
+  { n: 12, label: "Responsible consumption & production" },
+  { n: 13, label: "Climate action" },
+  { n: 14, label: "Life below water" },
+  { n: 15, label: "Life on land" },
+  { n: 16, label: "Peace, justice & strong institutions" },
+  { n: 17, label: "Partnerships for the goals" },
+];
+// The full set of AU Agenda 2063 aspirations research on the platform
+// is tagged against — real framework, not invented data.
+const AU_AGENDA = [
+  { n: 1, label: "A prosperous Africa" },
+  { n: 2, label: "An integrated continent" },
+  { n: 3, label: "Good governance, democracy & human rights" },
+  { n: 4, label: "A peaceful & secure Africa" },
+  { n: 5, label: "Strong cultural identity & shared values" },
+  { n: 6, label: "People-driven development" },
+  { n: 7, label: "Africa as a global player & partner" },
 ];
 
 export default function HomePage() {
@@ -115,18 +116,6 @@ export default function HomePage() {
             <p className="eyebrow text-gold-400 mb-5">
               The Pan African University · Continental Research Network
             </p>
-            {/*
-              NOTE on the "Connecting" vs "African" font mismatch you flagged:
-              both words share this single <h1> with the same font-display
-              class — there's no nested span splitting them, so structurally
-              they render identically. If they still look different in the
-              browser (not just in a screenshot), it's almost certainly a
-              font-loading flash (FOUT): the custom display font swaps in
-              after the fallback system font has already painted part of
-              the line. Share layout.tsx (where the font is loaded via
-              next/font) and I can set preload/fallback so this can't
-              flicker between words on first paint.
-            */}
             <h1 className="font-display text-4xl sm:text-5xl md:text-6xl leading-[1.08] mb-6">
               Connecting African scholars.
               <br />
@@ -188,10 +177,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Institute strip
-          NOTE: reordering (PAUSS -> PAULESI -> PAUWES -> PAUSTI -> PAUGHSS)
-          and the single-row layout live inside InstituteConstellation.tsx,
-          which wasn't shared — send that file over and I'll apply it. */}
+      {/* Institute strip */}
       <section className="py-12 sm:py-14 border-b border-[color:var(--border)]">
         <p className="eyebrow mb-6">Five institutes, one vision</p>
         <InstituteConstellation />
@@ -254,39 +240,49 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* AU Agenda 2063 — now first, per feedback. List layout (label +
-          title, scanned top-to-bottom) instead of wrapped pills, mirroring
-          the institute list pattern above so the eye has a clear order
-          to follow instead of competing chips. */}
+      {/* AU Agenda 2063 — the continental framework, so it leads. Rendered
+          as a plain numbered list (index badge + label side by side)
+          rather than rounded-full pills: wrapping a two-line aspiration
+          inside a pill stretches the pill into an odd blobby oval, and
+          that curve ends up competing with the text instead of framing
+          it. A fixed-size square badge holds the number regardless of
+          how long the label runs, so the eye has one consistent shape to
+          scan down rather than a field of unevenly-rounded shapes. */}
       <section className="py-12 sm:py-16 border-b border-[color:var(--border)]">
         <p className="eyebrow mb-3">Aligned with the continent&rsquo;s vision</p>
         <h2 className="font-display text-2xl sm:text-3xl mb-8 max-w-lg">
           Every submission is mapped to the AU Agenda 2063 aspirations it advances.
         </h2>
-        <div className="grid sm:grid-cols-2 gap-x-10 gap-y-5">
-          {SAMPLE_AU_AGENDA.map((a) => (
-            <div key={a.n} className="flex items-baseline gap-3">
-              <span className="font-mono text-xs text-secondary-600 shrink-0 w-24">{a.n}</span>
-              <span className="text-sm text-ink-secondary leading-relaxed">{a.title}</span>
-            </div>
+        <ul className="grid sm:grid-cols-2 gap-x-8 gap-y-4">
+          {AU_AGENDA.map((a) => (
+            <li key={a.n} className="flex items-start gap-3.5 py-1">
+              <span className="shrink-0 w-7 h-7 rounded-md border border-[color:var(--border-strong)] flex items-center justify-center font-mono text-[11px] text-gold-700">
+                {String(a.n).padStart(2, "0")}
+              </span>
+              <span className="text-sm text-ink-secondary leading-snug pt-1">{a.label}</span>
+            </li>
           ))}
-        </div>
+        </ul>
       </section>
 
-      {/* SDGs — same list treatment, 3 columns since there are more items */}
+      {/* SDG list — same numbered-row pattern as AU Agenda above, so the
+          two frameworks read as one consistent system instead of two
+          different chip styles competing for attention. */}
       <section className="py-12 sm:py-16 border-b border-[color:var(--border)]">
         <p className="eyebrow mb-3">Research, grounded in outcomes</p>
         <h2 className="font-display text-2xl sm:text-3xl mb-8 max-w-lg">
           Every submission is also mapped to the Sustainable Development Goals it addresses.
         </h2>
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-x-10 gap-y-5">
+        <ul className="grid sm:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-4">
           {SAMPLE_SDGS.map((s) => (
-            <div key={s.n} className="flex items-baseline gap-3">
-              <span className="font-mono text-xs text-secondary-600 shrink-0 w-14">{s.n}</span>
-              <span className="text-sm text-ink-secondary leading-relaxed">{s.title}</span>
-            </div>
+            <li key={s.n} className="flex items-start gap-3.5 py-1">
+              <span className="shrink-0 w-7 h-7 rounded-md border border-[color:var(--border-strong)] flex items-center justify-center font-mono text-[11px] text-primary-600">
+                {String(s.n).padStart(2, "0")}
+              </span>
+              <span className="text-sm text-ink-secondary leading-snug pt-1">{s.label}</span>
+            </li>
           ))}
-        </div>
+        </ul>
       </section>
 
       {/* Closing CTA band — same full-bleed fix as the hero above */}

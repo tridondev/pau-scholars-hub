@@ -11,6 +11,7 @@ urlpatterns = [
     path("api/auth/token/refresh/", TokenRefreshView.as_view(), name="token_refresh"),
     path("api/auth/social/", include("social_django.urls", namespace="social")),
     path("api/users/", include("apps.users.urls")),
+    path("api/academics/", include("apps.academics.urls")),
     path("api/submissions/", include("apps.submissions.urls")),
     path("api/journals/", include("apps.journals.urls")),
     path("api/repository/", include("apps.repository.urls")),

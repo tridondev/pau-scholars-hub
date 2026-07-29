@@ -91,7 +91,9 @@ const config: Config = {
       },
       fontFamily: {
         // Editorial serif for headlines — carries the "scholarly journal"
-        // personality. Body stays a clean grotesque for legibility across
+        // personality, and is part of the same IBM Plex superfamily as the
+        // mono face below so headings and data marks feel like one type
+        // system. Body stays a clean grotesque for legibility across
         // languages. Mono marks anything that is *data*: DOIs, dates,
         // institute codes, counts.
         display: ["var(--font-display)", "ui-serif", "Georgia", "serif"],

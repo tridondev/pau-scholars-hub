@@ -458,3 +458,234 @@ export function updateService(id: string, payload: Partial<{ is_active: boolean;
 export function getMyServices() {
   return request<UniversityServiceLite[] | { results: UniversityServiceLite[] }>("/users/services/mine/");
 }
+// ---------------------------------------------------------------------------
+// Academics (Section 9): course registration, results, GPA/CGPA, transcript,
+// alumni directory, and the lecturer-side course/roster/materials tools.
+// Mirrors apps.academics on the backend.
+// ---------------------------------------------------------------------------
+
+export interface Course {
+  id: string;
+  code: string;
+  title: string;
+  description: string;
+  credit_units: number;
+  institute: string | null;
+  institute_name: string;
+  lecturer: string | null;
+  lecturer_name: string;
+  academic_year: string;
+  semester: "first" | "second";
+  is_open_for_registration: boolean;
+}
+
+export interface CourseRegistration {
+  id: string;
+  course: string;
+  course_detail: Course;
+  academic_year: string;
+  semester: "first" | "second";
+  status: "registered" | "dropped";
+  registered_at: string;
+}
+
+export interface Result {
+  id: string;
+  course: string;
+  course_detail: Course;
+  academic_year: string;
+  semester: "first" | "second";
+  score: string | null;
+  grade: string;
+  grade_point: string;
+  is_published: boolean;
+  updated_at: string;
+}
+
+export interface LecturerResult {
+  id: string;
+  student: string;
+  student_name: string;
+  student_email: string;
+  course: string;
+  academic_year: string;
+  semester: "first" | "second";
+  score: string | null;
+  grade: string;
+  grade_point: string;
+  is_published: boolean;
+  updated_at: string;
+}
+
+export interface CourseMaterial {
+  id: string;
+  course: string;
+  course_code: string;
+  title: string;
+  file: string;
+  uploaded_by_name: string;
+  uploaded_at: string;
+}
+
+export interface RosterEntry {
+  registration_id: string;
+  student_id: string;
+  student_name: string;
+  student_email: string;
+  student_staff_id: string;
+  result_id: string | null;
+  score: string | null;
+  grade: string;
+  is_published: boolean;
+}
+
+export interface GpaSemester {
+  academic_year: string;
+  semester: string;
+  gpa: string;
+  total_units: number;
+  course_count: number;
+}
+
+export interface GpaSummary {
+  cgpa: string;
+  total_units: number;
+  semesters: GpaSemester[];
+}
+
+export interface TranscriptData {
+  student: {
+    full_name: string;
+    email: string;
+    student_staff_id: string;
+    institute: string;
+    programme: string;
+    department: string;
+  };
+  periods: { label: string; results: Result[] }[];
+  summary: GpaSummary;
+}
+
+export interface AlumniDirectoryEntry {
+  id: string;
+  full_name: string;
+  institute: string;
+  programme: string;
+  country: string;
+}
+
+function unwrap<T>(data: T[] | { results: T[] }): T[] {
+  return Array.isArray(data) ? data : data.results;
+}
+
+// --- Student: browse & register ---------------------------------------------
+
+export async function listCourses(params: {
+  academic_year?: string; semester?: string; institute?: string;
+  search?: string; open?: boolean;
+} = {}) {
+  const qs = new URLSearchParams();
+  if (params.academic_year) qs.set("academic_year", params.academic_year);
+  if (params.semester) qs.set("semester", params.semester);
+  if (params.institute) qs.set("institute", params.institute);
+  if (params.search) qs.set("search", params.search);
+  if (params.open) qs.set("open", "true");
+  const suffix = qs.toString() ? `?${qs.toString()}` : "";
+  const data = await request<Course[] | { results: Course[] }>(`/academics/courses/${suffix}`);
+  return unwrap(data);
+}
+
+export async function listMyRegistrations() {
+  const data = await request<CourseRegistration[] | { results: CourseRegistration[] }>(
+    "/academics/registrations/"
+  );
+  return unwrap(data);
+}
+
+export function registerForCourse(courseId: string) {
+  return request<CourseRegistration>("/academics/registrations/", {
+    method: "POST", body: JSON.stringify({ course: courseId }),
+  });
+}
+
+export function dropRegistration(id: string) {
+  return request<void>(`/academics/registrations/${id}/`, { method: "DELETE" });
+}
+
+// --- Student: results, GPA, transcript ---------------------------------------
+
+export async function getMyResults() {
+  const data = await request<Result[] | { results: Result[] }>("/academics/results/mine/");
+  return unwrap(data);
+}
+
+export function getMyGpa() {
+  return request<GpaSummary>("/academics/gpa/mine/");
+}
+
+export function getMyTranscript() {
+  return request<TranscriptData>("/academics/transcript/mine/");
+}
+
+// --- Alumni directory ---------------------------------------------------------
+
+export function getAlumniDirectory() {
+  return request<AlumniDirectoryEntry[]>("/academics/alumni/directory/");
+}
+
+// --- Lecturer: courses, roster, results, materials -----------------------------
+
+export async function listLecturerCourses() {
+  const data = await request<Course[] | { results: Course[] }>("/academics/lecturer/courses/");
+  return unwrap(data);
+}
+
+export function getCourseRoster(courseId: string) {
+  return request<RosterEntry[]>(`/academics/lecturer/courses/${courseId}/roster/`);
+}
+
+export async function listLecturerResults(courseId?: string) {
+  const suffix = courseId ? `?course=${courseId}` : "";
+  const data = await request<LecturerResult[] | { results: LecturerResult[] }>(
+    `/academics/lecturer/results/${suffix}`
+  );
+  return unwrap(data);
+}
+
+export function createLecturerResult(payload: {
+  student: string; course: string; score: number;
+  academic_year?: string; semester?: string; is_published?: boolean;
+}) {
+  return request<LecturerResult>("/academics/lecturer/results/", {
+    method: "POST", body: JSON.stringify(payload),
+  });
+}
+
+export function updateLecturerResult(
+  id: string,
+  payload: Partial<{ score: number; is_published: boolean }>
+) {
+  return request<LecturerResult>(`/academics/lecturer/results/${id}/`, {
+    method: "PATCH", body: JSON.stringify(payload),
+  });
+}
+
+export async function listCourseMaterials(courseId?: string) {
+  const suffix = courseId ? `?course=${courseId}` : "";
+  const data = await request<CourseMaterial[] | { results: CourseMaterial[] }>(
+    `/academics/materials/${suffix}`
+  );
+  return unwrap(data);
+}
+
+export function uploadCourseMaterial(payload: { course: string; title: string; file: File }) {
+  const form = new FormData();
+  form.append("course", payload.course);
+  form.append("title", payload.title);
+  form.append("file", payload.file);
+  return request<CourseMaterial>("/academics/materials/", { method: "POST", body: form });
+}
+
+export function deleteCourseMaterial(id: string) {
+  return request<void>(`/academics/materials/${id}/`, { method: "DELETE" });
+}

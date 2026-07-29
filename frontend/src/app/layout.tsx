@@ -5,10 +5,14 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { AuthProvider } from "@/lib/auth";
 
+// Headline serif and the mono used for data (DOIs, dates, institute codes)
+// are both from the IBM Plex superfamily, so headings and data marks read
+// as one deliberate type system instead of two unrelated typefaces
+// fighting within the same sentence.
 const display = IBM_Plex_Serif({
   subsets: ["latin"],
   variable: "--font-display",
-  weight: ["400", "500", "600"],
+  weight: ["400", "500", "600", "700"],
   style: ["normal", "italic"],
 });
 const sans = Inter({ subsets: ["latin"], variable: "--font-sans" });

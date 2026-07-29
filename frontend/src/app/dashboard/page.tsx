@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { getMySubmissions, Submission } from "@/lib/api";
+import { getMySubmissions, Submission, getMyServices, UniversityServiceLite } from "@/lib/api";
 import { useAuth } from "@/lib/auth";
 import StatusBadge from "@/components/StatusBadge";
 
@@ -18,6 +18,7 @@ export default function DashboardPage() {
   const [submissions, setSubmissions] = useState<Submission[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [services, setServices] = useState<UniversityServiceLite[]>([]);
 
   useEffect(() => {
     if (!authLoading && !user) {
@@ -29,6 +30,9 @@ export default function DashboardPage() {
         .then((data) => setSubmissions(data.results))
         .catch((err) => setError(err.message))
         .finally(() => setLoading(false));
+      getMyServices()
+        .then((data) => setServices(Array.isArray(data) ? data : data.results))
+        .catch(() => setServices([]));
     }
   }, [authLoading, user, router]);
 
@@ -43,6 +47,28 @@ export default function DashboardPage() {
       <p className="text-sm text-ink-secondary mb-8">
         Welcome back, {user.first_name || user.email}.
       </p>
+
+      {services.length > 0 && (
+        <div className="mb-10">
+          <div className="flex items-center justify-between mb-3">
+            <p className="eyebrow">Your services</p>
+            <Link href="/services" className="text-xs text-primary-600 hover:underline">
+              View all
+            </Link>
+          </div>
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-3">
+            {services.slice(0, 4).map((s) => (
+              <Link
+                key={s.key}
+                href={`/services/${s.key}`}
+                className="card px-4 py-3.5 hover:border-primary-300 transition-colors"
+              >
+                <p className="text-sm font-medium">{s.name}</p>
+              </Link>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* Summary cards */}
       <div className="grid grid-cols-3 gap-4 mb-10 max-w-lg">
