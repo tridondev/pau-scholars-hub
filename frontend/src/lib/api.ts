@@ -386,6 +386,7 @@ export interface ManagedUser {
   role: string;
   institute: Institute | null;
   date_joined: string;
+  last_login: string | null;
 }
 
 export function listManagedUsers(q: string = "") {

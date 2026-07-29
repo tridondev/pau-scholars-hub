@@ -121,7 +121,7 @@ export default function RolesAdminPage() {
         <table className="w-full text-sm">
           <thead>
             <tr className="text-left text-ink-muted">
-              <th className="py-2">Name</th><th>Email</th><th>Institute</th><th>Role</th>
+              <th className="py-2">Name</th><th>Email</th><th>Institute</th><th>Last login</th><th>Role</th>
             </tr>
           </thead>
           <tbody>
@@ -130,6 +130,7 @@ export default function RolesAdminPage() {
                 <td className="py-2">{u.first_name} {u.last_name}</td>
                 <td>{u.email}</td>
                 <td>{u.institute?.acronym || "—"}</td>
+                <td>{u.last_login ? new Date(u.last_login).toLocaleDateString() : "Never"}</td>
                 <td>
                   <select value={u.role} onChange={(e) => handleRoleChange(u.id, e.target.value)} className="field-input">
                     {ROLES.map(([v, l]) => <option key={v} value={v}>{l}</option>)}

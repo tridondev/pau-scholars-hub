@@ -72,7 +72,7 @@ class UserManagementSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ["id", "email", "first_name", "last_name", "role", "institute", "date_joined"]
+        fields = ["id", "email", "first_name", "last_name", "role", "institute", "date_joined", "last_login"]
 
 
 class RoleUpdateSerializer(serializers.ModelSerializer):
